@@ -7,3 +7,11 @@
 <h3> What is analyzed? </h3>
  
 <h4>- averageCommentPerPost </h4>
+<h4>- photographedPosts </h4>
+<h4>- videoedPosts </h4>
+<h4>- averageUpvote </h4>
+<h4>- commentToAnotherComment </h4>
+<h4>- intensityPerMonth </h4>
+<h4>- numberOfTimesThatGivenKeywordIsFound </h4>
+
+
