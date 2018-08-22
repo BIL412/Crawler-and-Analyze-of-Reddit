@@ -128,3 +128,128 @@ def my_function():
          except Exception as e:
              print("")
 
+commentcount = source.find_all("span",attrs={"class":"FHCV02u6Cp2zYL0fhQPsO"}) #commentcount getir
+         upvoted = source.find_all("span",attrs={"class":"_2cxR1YcQUgsimt7WSmt8FI"}) #upvote getir
+
+         if info_head_arr:
+             p["Video_Url"] = str(info_head_arr[0])
+         else:
+             p["Video_Url"] = ""
+         if p["Header_Comment"] == "":
+             for x in info_text:
+              info_head_arr.append(str(x.text))
+
+         p["Header_Comment"] = info_head_arr
+         for x in commentcount:
+          p["Comment_Count"] = str(x.text)
+          if str(x.text)=="comment": #comment döndürmesi yorum olmadığını gösterir
+              p["Comment_Count"] = "0 comment"
+              nullcomment = {}
+              #nullcomment["Username"] = ""
+              #nullcomment["Comment"] = ""
+              #nullcomment["Threadline"] = ""
+              #nullcomment["Minute_ago"] = ""
+              #nullcomment["Id"] = ""
+              nullcommentarray=[]
+              nullcommentarray.append(nullcomment)
+              p["Comment"] = nullcommentarray
+         for x in upvoted:
+          p["Comment_Upvoted"] = str(x.text)
+
+
+        #if len(array)<=1: continue
+         i = 0
+         j = 0
+         comment  =  []
+
+         for x in array: #x her bir yoruma karşılık geliyor
+            try:
+                array2 = []
+                array2 = str(x).split('>')
+
+                forid = []
+                forid = str(array2[1]).split('"')
+
+                id = forid[1].split(' ')[0] #her commentin idsi
+
+                idgorediv = source.find_all("div",attrs={"id":id}) #her comment div inin içinde comment id si tutuluyor, id ye göre commentin içine giriliyor
+                html_doc = str(idgorediv)
+                source2 = BeautifulSoup(html_doc, 'html.parser') #comment
+
+                iplikdivleri = source2.find_all("div",attrs={"class":"fxv3b9-1"}) 
+                html_doc_iplik_divleri = str(iplikdivleri)
+
+                html_doc_iplik_divleri_dizi = []
+                html_doc_iplik_divleri_dizi = html_doc_iplik_divleri.split('>')
+                del html_doc_iplik_divleri_dizi[len(html_doc_iplik_divleri_dizi)-2:len(html_doc_iplik_divleri_dizi)+1]
+                del html_doc_iplik_divleri_dizi[0:1]
+                del html_doc_iplik_divleri_dizi[len(html_doc_iplik_divleri_dizi)-6 : len(html_doc_iplik_divleri_dizi)+1]
+
+                kimlerinaltcommenti = [] #hangi yorumun altında olduğunu tutar
+                a1=0
+                a2=4
+                gecici = 1
+                while gecici < len(html_doc_iplik_divleri_dizi)/2:
+                    if len(html_doc_iplik_divleri_dizi[a1:a2])!=0: kimlerinaltcommenti.append(str(html_doc_iplik_divleri_dizi[a1:a2]).split('"')[1].split(" ")[0] )
+                    a1+=4
+                    a2+=4
+                    gecici += 1
+
+                #USERNAME
+                kullanıcıadı = source2.find_all("a",attrs={"class":"s1461iz-1"})
+                username = str(kullanıcıadı).split('"')
+
+                if len(username)==5:
+                 username = username[4].split('<')[0]
+                username2 = username[1:]
+
+
+                #METİNLER
+                metinler = source2.find_all("p",attrs={"class":"s570a4-10"})
+                metin = ""
+                if len(metinler)>=1: metin = str(metinler).split(">")[1].split('<')[0]
+
+                #NE KADAR ÖNCE
+                nekadaronce = source2.find_all("a",attrs={"class":"s15twnto-12"})
+
+                nekadaronce2 = str(nekadaronce).split('>')[2].split('<')[0]
+
+                global arraycomments
+                d = {}
+                d["Username"] = username2
+                d["Comment"] = metin
+                d["Threadline"] = kimlerinaltcommenti
+                d["Minute_ago"] = nekadaronce2
+                d["Id"] = id
+                arraycomments.append(d)
+                p["Comment"] = arraycomments
+            except Exception as e:
+                print("")
+
+
+         arraycomments=[]
+         global postarray
+         postarray.append(p)
+         global c
+         c["Data"] = postarray
+         #print(c)
+
+       except Exception as e: #hata olursa hata olan yere kadar yazdır
+         print("")
+         #with open('testfile.json', 'w', encoding='utf-8') as f:
+             #print(json.dumps(c, ensure_ascii=False , indent=5), file=f)
+
+
+while dongudencik < 1:
+  my_function()
+
+#print(json.dumps(p, ensure_ascii=False , indent=5))
+
+with open('testfile.json', 'w', encoding='utf-8') as f:
+    print(json.dumps(c, ensure_ascii=False , indent=5), file=f)
+
+print("\n")
+
+print("---Data---")
+
+print(len(postarray))
